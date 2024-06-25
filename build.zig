@@ -23,38 +23,16 @@ pub fn build(b: *std.Build) void {
     module.addIncludePath(b.path("include"));
     module.addCSourceFile(.{ .file = b.path("src/isocline.c") });
 
-    const lib = b.addStaticLibrary(.{
-        .name = "isocline",
-        // In this case the main source file is merely a path, however, in more
-        // complicated build scripts, this could be a generated file.
+    const wrapper_test = b.addTest(.{
         .root_source_file = b.path("wrapper/lib.zig"),
         .target = target,
         .optimize = optimize,
     });
 
-    lib.linkLibC();
-    lib.addIncludePath(b.path("include"));
-    lib.root_module.addCSourceFile(.{ .file = b.path("src/isocline.c") });
-
-    // This declares intent for the library to be installed into the standard
-    // location when the user invokes the "install" step (the default step when
-    // running `zig build`).
-    b.installArtifact(lib);
-
-    const lib_unit_tests = b.addTest(.{
-        .root_source_file = b.path("wrapper/lib.zig"),
-        .target = target,
-        .optimize = optimize,
-    });
-
-    lib_unit_tests.linkLibC();
-    lib_unit_tests.addIncludePath(b.path("include"));
-    lib_unit_tests.root_module.addCSourceFile(.{ .file = b.path("src/isocline.c") });
-
-    const run_lib_unit_tests = b.addRunArtifact(lib_unit_tests);
+    const run_wrapper_test = b.addRunArtifact(wrapper_test);
 
     const test_step = b.step("test", "Run unit tests");
-    test_step.dependOn(&run_lib_unit_tests.step);
+    test_step.dependOn(&run_wrapper_test.step);
 
     var c_example = b.addExecutable(.{
         .name = "c-example",
@@ -62,15 +40,11 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
     c_example.root_module.addCSourceFile(.{ .file = b.path("test/example.c") });
-    c_example.addIncludePath(b.path("include"));
-    c_example.linkLibC();
-    c_example.linkLibrary(lib);
 
     var c_example_run = b.addRunArtifact(c_example);
 
     const c_example_step = b.step("c-example", "Run C example");
     c_example_step.dependOn(&c_example_run.step);
-    c_example_step.dependOn(&lib.step);
 
     var c_test_colors = b.addExecutable(.{
         .name = "c-test-colors",
@@ -78,13 +52,15 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
     c_test_colors.root_module.addCSourceFile(.{ .file = b.path("test/test_colors.c") });
-    c_test_colors.addIncludePath(b.path("include"));
-    c_test_colors.linkLibC();
-    c_test_colors.linkLibrary(lib);
 
     var c_test_colors_run = b.addRunArtifact(c_test_colors);
 
     const c_test_colors_step = b.step("c-test-colors", "Run C test colors");
     c_test_colors_step.dependOn(&c_test_colors_run.step);
-    c_test_colors_step.dependOn(&lib.step);
+
+    inline for ([_]*std.Build.Step.Compile{ wrapper_test, c_example, c_test_colors }) |c| {
+        c.linkLibC();
+        c.addIncludePath(b.path("include"));
+        c.root_module.addCSourceFile(.{ .file = b.path("src/isocline.c") });
+    }
 }
