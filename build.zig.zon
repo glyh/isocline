@@ -66,6 +66,7 @@
         "build.zig.zon",
         "src",
         "include",
+        "wrapper",
         // For example...
         //"LICENSE",
         //"README.md",
