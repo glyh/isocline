@@ -32,7 +32,7 @@ pub inline fn print(comptime fmt: []const u8, args: anytype) !void {
     try std.fmt.format(IsoclineWriter{}, fmt, args);
 }
 
-pub inline fn setHistory(file_name: []const u8, max_entries: c_long) void {
+pub inline fn setHistory(file_name: ?[]const u8, max_entries: c_long) void {
     isocline.ic_set_history(@ptrCast(file_name), max_entries);
 }
 
@@ -48,6 +48,10 @@ pub inline fn styleDef(style_name: []const u8, fmt: []const u8) void {
     isocline.ic_style_def(@ptrCast(style_name), @ptrCast(fmt));
 }
 
-test "print" {
+test "History" {
+    setHistory(null, 200);
+}
+
+test "Print" {
     try print("{s}", .{"Hello"});
 }
