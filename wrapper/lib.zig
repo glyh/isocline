@@ -13,7 +13,7 @@ pub fn readline(prompt_text: []const u8) ?[]const u8 {
     }
 }
 
-pub fn printf(comptime fmt: []const u8, ...) callconv(.C) void {
+pub fn printf(fmt: []const u8, ...) callconv(.C) void {
     var ap = @cVaStart();
     defer @cVaEnd(&ap);
     isocline.ic_vprintf(@ptrCast(fmt), ap);
