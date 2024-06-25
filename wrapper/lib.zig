@@ -13,8 +13,25 @@ pub fn readline(prompt_text: []const u8) ?[]const u8 {
     }
 }
 
-pub fn printf(fmt: []const u8, ...) callconv(.C) void {
-    var ap = @cVaStart();
-    defer @cVaEnd(&ap);
-    isocline.ic_vprintf(@ptrCast(fmt), ap);
+const IsoclineWriter = struct {
+    pub const Error = error{};
+    pub const Self = IsoclineWriter;
+
+    pub inline fn writeAll(_: Self, bytes: []const u8) Error!void {
+        isocline.ic_print(@ptrCast(bytes));
+    }
+
+    pub inline fn writeBytesNTimes(_: Self, bytes: []const u8, n: usize) Error!void {
+        for (0..n) |_| {
+            isocline.ic_print(@ptrCast(bytes));
+        }
+    }
+};
+
+pub fn print(comptime fmt: []const u8, args: anytype) !void {
+    try std.fmt.format(IsoclineWriter{}, fmt, args);
+}
+
+test "print" {
+    try print("{s}", .{"Hello"});
 }

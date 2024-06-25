@@ -41,6 +41,21 @@ pub fn build(b: *std.Build) void {
     // running `zig build`).
     b.installArtifact(lib);
 
+    const lib_unit_tests = b.addTest(.{
+        .root_source_file = b.path("wrapper/lib.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    lib_unit_tests.linkLibC();
+    lib_unit_tests.addIncludePath(b.path("include"));
+    lib_unit_tests.root_module.addCSourceFile(.{ .file = b.path("src/isocline.c") });
+
+    const run_lib_unit_tests = b.addRunArtifact(lib_unit_tests);
+
+    const test_step = b.step("test", "Run unit tests");
+    test_step.dependOn(&run_lib_unit_tests.step);
+
     var c_example = b.addExecutable(.{
         .name = "c-example",
         .target = target,
