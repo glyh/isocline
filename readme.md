@@ -18,7 +18,7 @@ Isocline is a pure C library that can be used as an alternative to the GNU readl
   
 - License: MIT. 
 
-- Comes with a Haskell binding ([`System.Console.Isocline`][hdoc].
+- This wrapper use zig 0.13.0 to implement the build script
 
 Enjoy,
   Daan
@@ -57,13 +57,6 @@ You can compile and run the [example] as:
 $ gcc -o example -Iinclude test/example.c src/isocline.c
 $ ./example
 ```
-
-or, the Haskell [example][HaskellExample]:
-```
-$ ghc -ihaskell test/Example.hs src/isocline.c
-$ ./test/Example
-```
-
 
 # Editing with Isocline
 
@@ -179,16 +172,9 @@ and the example program:
 $ ./example
 ```
 
-### Build the Haskell Library
-
-See the Haskell [readme][Haskell] for instructions to build and use the Haskell library.
-
-
 # API Reference
 
 * See the [C API reference][docapi] and the [example] for example usage of history, completion, etc.
-
-* See the [Haskell API reference][hdoc] on Hackage and the Haskell [example][HaskellExample].
 
 
 # Motivation
@@ -459,8 +445,6 @@ Contact me if you are interested in doing any of these :-)
 [GNU readline]: https://tiswww.case.edu/php/chet/readline/rltop.html
 [koka]: http://www.koka-lang.org
 [submodule]: https://git-scm.com/book/en/v2/Git-Tools-Submodules
-[Haskell]: https://github.com/daanx/isocline/tree/main/haskell
-[HaskellExample]: https://github.com/daanx/isocline/blob/main/test/Example.hs
 [example]: https://github.com/daanx/isocline/blob/main/test/example.c
 [termtosvg]: https://github.com/nbedos/termtosvg
 [Rich]: https://github.com/willmcgugan/rich
@@ -470,4 +454,3 @@ Contact me if you are interested in doing any of these :-)
 [ansicolors]: https://en.wikipedia.org/wiki/Web_colors#Basic_colors
 [ansicolor256]: https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
 [docapi]: https://daanx.github.io/isocline
-[hdoc]: https://hackage.haskell.org/package/isocline/docs/System-Console-Isocline.html
