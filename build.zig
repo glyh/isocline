@@ -15,10 +15,12 @@ pub fn build(b: *std.Build) void {
     // set a preferred release mode, allowing the user to decide how to optimize.
     const optimize = b.standardOptimizeOption(.{});
 
-    _ = b.addModule("isocline", .{
+    const module = b.addModule("isocline", .{
         .root_source_file = b.path("wrapper/lib.zig"),
         .imports = &.{},
+        .link_libc = true,
     });
+    module.addIncludePath(b.path("include"));
 
     const lib = b.addStaticLibrary(.{
         .name = "isocline",
