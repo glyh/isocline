@@ -21,7 +21,7 @@ pub fn build(b: *std.Build) void {
         .link_libc = true,
     });
     module.addIncludePath(b.path("include"));
-    module.root_module.addCSourceFile(.{ .file = b.path("src/isocline.c") });
+    module.addCSourceFile(.{ .file = b.path("src/isocline.c") });
 
     const lib = b.addStaticLibrary(.{
         .name = "isocline",
