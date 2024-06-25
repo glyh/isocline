@@ -1,5 +1,5 @@
 const isocline = @cImport({
-    @cInclude("../include/isocline.h");
+    @cInclude("isocline.h");
 });
 
 pub fn readline(prompt_text: []const u8) ?[]const u8 {

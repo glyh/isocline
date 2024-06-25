@@ -29,6 +29,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    lib.addIncludePath(b.path("include"));
     lib.linkLibC();
     lib.root_module.addCSourceFile(.{ .file = b.path("src/isocline.c") });
 
